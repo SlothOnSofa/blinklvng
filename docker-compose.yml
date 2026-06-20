@@ -4,6 +4,15 @@ services:
   blinklvng-website:
     build: .
     container_name: blinklvng-website
-    ports:
-      - "80:80"
     restart: unless-stopped
+    # Remove the 'ports: 80:80' because Traefik handles it
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.blinklvng.rule=Host(`blinklvng.com`) || Host(`www.blinklvng.com`)"
+      - "traefik.http.services.blinklvng.loadbalancer.server.port=80"
+      
+# Note: You may need to add your Traefik network here if Traefik runs on a custom network:
+# networks:
+#   default:
+#     external:
+#       name: traefik_network
